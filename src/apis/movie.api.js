@@ -9,6 +9,16 @@ const movieApi = {
       throw error;
     }
   },
+  getMovieList: async () => {
+    try {
+      const response = await fetcher.get(
+        "QuanLyPhim/LayDanhSachPhim?maNhom=GP01"
+      );
+      return response.data.content;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default movieApi;
