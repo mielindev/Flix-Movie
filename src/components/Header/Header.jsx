@@ -48,9 +48,9 @@ export default function Header() {
   };
   return (
     <AppBar
-      position="static"
+      position="fixed"
       sx={{
-        my: 1,
+        mb: 1,
         py: 1,
         width: "100%",
         display: "flex",
