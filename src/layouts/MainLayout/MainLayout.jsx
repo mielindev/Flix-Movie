@@ -5,10 +5,10 @@ import { Box } from "@mui/material";
 
 export default function MainLayout({ children }) {
   return (
-    <div className="max-w-screen">
+    <Box className="max-w-screen">
       <Header />
       {children}
       <Outlet />
-    </div>
+    </Box>
   );
 }

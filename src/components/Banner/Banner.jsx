@@ -30,8 +30,7 @@ export default function Banner() {
             image={slide.hinhAnh}
             sx={{
               width: "100%",
-              height: "80vh",
-              // display: "block",
+              height: "90vh",
               objectFit: "inherit",
             }}
           />

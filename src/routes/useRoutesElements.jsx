@@ -7,6 +7,10 @@ import LoginPage from "../modules/auth/LoginPage/LoginPage";
 import RegisterPage from "../modules/auth/RegisterPage/RegisterPage";
 import { useRoutes } from "react-router-dom";
 import PATH from "./path";
+import AdminPage from "../modules/admin/AdminPage/AdminPage";
+import AdminLayout from "../layouts/AdminLayout/AdminLayout";
+import UserManagement from "../modules/admin/UserManagement/UserManagement";
+import MovieManagement from "../modules/admin/MovieManagement/MovieManagement";
 
 export default function useRoutesElements() {
   const elements = useRoutes([
@@ -35,6 +39,24 @@ export default function useRoutesElements() {
         {
           path: PATH.REGISTER,
           element: <RegisterPage />,
+        },
+      ],
+    },
+    {
+      path: PATH.ADMIN,
+      element: <AdminLayout />,
+      children: [
+        {
+          index: true,
+          element: <AdminPage />,
+        },
+        {
+          path: PATH.USER_MANAGEMENT,
+          element: <UserManagement />,
+        },
+        {
+          path: PATH.MOVIE_MANAGEMENT,
+          element: <MovieManagement />,
         },
       ],
     },

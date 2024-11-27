@@ -36,7 +36,8 @@ export default function Header() {
   const handleLogout = () => {
     // Logic đăng xuất (thay thế khi cần)
     dispatch(logout());
-    handleCloseMenu();
+    navigate(PATH.HOME);
+    // handleCloseMenu();
   };
 
   const handleMenuOpen = (event) => {
@@ -55,6 +56,7 @@ export default function Header() {
         width: "100%",
         display: "flex",
         justifyContent: "center",
+        zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
       color="default"
     >
@@ -115,7 +117,7 @@ export default function Header() {
                 }}
                 onClick={handleMenuOpen}
               >
-                U
+                {currentUser.hoTen?.charAt(0).toUpperCase()}
               </Avatar>
               <Menu
                 anchorEl={anchorEl}
