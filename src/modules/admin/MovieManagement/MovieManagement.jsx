@@ -24,7 +24,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import movieApi from "../../../apis/movie.api";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
@@ -37,6 +37,11 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { NavLink } from "react-router-dom";
 import PATH from "../../../routes/path";
+import toast from "react-hot-toast";
+import { LoadingButton } from "@mui/lab";
+import { format } from "date-fns";
+import AddOrUpdateMovie from "./AddOrUpdateMovie";
+import useOpenModal from "../../../hooks/useOpenModal";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -64,21 +69,56 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function MovieManagement() {
   const [page, setPage] = useState(1);
+  const { openModal, onCloseModal, handleClickOpen } = useOpenModal();
+  const [openAddorUpdate, setOpenAddorUpdate] = useState(false);
   const [open, setOpen] = useState(false);
   const [movieId, setMovieId] = useState(null);
-
+  const [dataEdit, setDataEdit] = useState(null);
+  const queryClient = useQueryClient();
   const { data, isLoading, isError } = useQuery({
     queryKey: ["movieListPagination", page],
     queryFn: () => movieApi.getMovieListPagination(page),
   });
 
-  const { mutate } = useMutation({
-    mutationFn: (id) => movieApi.deleteMovie(id),
+  const { mutate, isPending: isPendingDetele } = useMutation({
+    mutationFn: (id) => {
+      return movieApi.deleteMovie(id);
+    },
+    onSuccess: (response) => {
+      toast.success(response);
+      queryClient.refetchQueries(["movieListPagination", page]);
+    },
     onError: (error) => {
-      console.log("👉 ~ MovieManagement ~ error:", error);
+      toast.error("Xoá phim thất bại. Vui lòng thử lại!");
+    },
+    onSettled: () => {
+      setMovieId(null);
+      onCloseModal();
+    },
+  });
+
+  const { mutate: mutateHandleAddMovie } = useMutation({
+    mutationFn: (formData) => movieApi.addMovie(formData),
+    onError: (error) => {
+      toast.error("Thêm phim thất bại. Vui lòng thử lại");
     },
     onSuccess: (response) => {
       console.log("👉 ~ MovieManagement ~ response:", response);
+      toast.success("Thêm phim thành công");
+      queryClient.refetchQueries(["movieListPagination", page]);
+      setOpenAddorUpdate(false);
+    },
+  });
+
+  const { mutate: mutateHandleEditMovie } = useMutation({
+    mutationFn: (formData) => movieApi.updateMovie(formData),
+    onSuccess: (response) => {
+      toast.success("Cập nhật thành công!");
+      setOpenAddorUpdate(false);
+    },
+    onError: (error) => {
+      console.log("👉 ~ MovieManagement ~ error:", error);
+      toast.error("Cập nhật thất bại. Vui lòng thử lại!");
     },
   });
 
@@ -95,10 +135,48 @@ export default function MovieManagement() {
   };
 
   const handleClose = () => {
-    setOpen(false);
+    if (!isPendingDetele) {
+      onCloseModal();
+      setMovieId(null);
+    }
+  };
+  const handleAddOrEditMovie = (formValues) => {
+    if (dataEdit) {
+      console.log(
+        "👉 ~ handleAddOrEditMovie ~ dataEdit:",
+        format(new Date(dataEdit.ngayKhoiChieu), "dd/MM/yyyy")
+      );
+      //Gọi Api
+      let formData = new FormData();
+      formData.append("maNhom", "GP03");
+      formData.append("tenPhim", formValues.tenPhim);
+      formData.append("trailer", formValues.trailer);
+      formData.append("moTa", formValues.moTa);
+      formData.append("ngayKhoiChieu", formValues.ngayKhoiChieu);
+      formData.append("dangChieu", formValues.trangThai);
+      formData.append("sapChieu", !formValues.trangThai);
+      formData.append("hot", formValues.hot);
+      formData.append("danhGia", formValues.danhGia);
+      formData.append("hinhAnh", formValues.hinhAnh);
+      mutateHandleEditMovie(formData);
+    } else {
+      let formData = new FormData();
+      formData.append("maNhom", "GP03");
+      formData.append("tenPhim", formValues.tenPhim);
+      formData.append("trailer", formValues.trailer);
+      formData.append("moTa", formValues.moTa);
+      formData.append("ngayKhoiChieu", formValues.ngayKhoiChieu);
+      formData.append("dangChieu", formValues.trangThai);
+      formData.append("sapChieu", !formValues.trangThai);
+      formData.append("hot", formValues.hot);
+      formData.append("danhGia", formValues.danhGia);
+      formData.append("hinhAnh", formValues.hinhAnh);
+      mutateHandleAddMovie(formData);
+    }
   };
 
   const movieListPagination = data?.items || [];
+  const count = data?.totalPages || 1;
   return (
     <Box sx={{ maxHeight: "100vh" }}>
       <Stack
@@ -113,7 +191,14 @@ export default function MovieManagement() {
             Movie Management
           </Typography>
         </Breadcrumbs>
-        <Button sx={{ px: 3 }} color="primary" variant="contained">
+        <Button
+          onClick={() => {
+            setOpenAddorUpdate(true);
+          }}
+          sx={{ px: 3 }}
+          color="primary"
+          variant="contained"
+        >
           Thêm phim
         </Button>
       </Stack>
@@ -164,7 +249,9 @@ export default function MovieManagement() {
                   <StyledTableCell width={180}>
                     <img src={movie.hinhAnh} className="object-fill" alt="" />
                   </StyledTableCell>
-                  <StyledTableCell>{movie.ngayKhoiChieu}</StyledTableCell>
+                  <StyledTableCell>
+                    {format(new Date(movie.ngayKhoiChieu), "dd/MM/yyyy HH:mm")}
+                  </StyledTableCell>
                   <StyledTableCell>
                     {movie.hot ? (
                       <Typography>🔥</Typography>
@@ -202,7 +289,8 @@ export default function MovieManagement() {
                     >
                       <IconButton
                         onClick={() => {
-                          console.log("edit");
+                          setDataEdit(movie);
+                          setOpenAddorUpdate(true);
                         }}
                       >
                         <EditIcon sx={{ color: "orange" }} />
@@ -231,7 +319,7 @@ export default function MovieManagement() {
         )}
         <Stack sx={{ py: 2 }} alignItems="end">
           <Pagination
-            count={data?.totalPages - 1 || 1}
+            count={count}
             color="primary"
             variant="outlined"
             page={page}
@@ -246,7 +334,7 @@ export default function MovieManagement() {
         </Stack>
       </TableContainer>
       <Dialog
-        open={open}
+        open={openModal}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
@@ -258,20 +346,35 @@ export default function MovieManagement() {
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ py: 2 }}>
-          <Button size="small" variant="contained" onClick={handleClose}>
-            Disagree
-          </Button>
           <Button
+            disabled={isPendingDetele}
+            size="small"
+            variant="contained"
+            onClick={handleClose}
+          >
+            Cancel
+          </Button>
+          <LoadingButton
+            loading={isPendingDetele}
             size="small"
             variant="contained"
             color="error"
             onClick={handleDeleteMovie}
             autoFocus
           >
-            Agree
-          </Button>
+            Ok
+          </LoadingButton>
         </DialogActions>
       </Dialog>
+      <AddOrUpdateMovie
+        isOpen={openAddorUpdate}
+        onClose={() => {
+          setOpenAddorUpdate(false);
+          setDataEdit(null);
+        }}
+        onSubmit={handleAddOrEditMovie}
+        dataEdit={dataEdit}
+      />
     </Box>
   );
 }

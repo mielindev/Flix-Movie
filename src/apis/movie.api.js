@@ -4,6 +4,7 @@ const movieApi = {
   getBannerMovie: async () => {
     try {
       const response = await fetcher.get("QuanLyPhim/LayDanhSachBanner");
+      console.log("👉 ~ getBannerMovie: ~ response:", response);
       return response.data.content;
     } catch (error) {
       throw error.response.data;
@@ -12,7 +13,7 @@ const movieApi = {
   getMovieList: async () => {
     try {
       const response = await fetcher.get(
-        "QuanLyPhim/LayDanhSachPhim?maNhom=GP01"
+        "QuanLyPhim/LayDanhSachPhim?maNhom=GP03"
       );
       return response.data.content;
     } catch (error) {
@@ -22,7 +23,7 @@ const movieApi = {
   getMovieListPagination: async (page = 1, pageSize = 10) => {
     try {
       const response = await fetcher.get(
-        `QuanLyPhim/LayDanhSachPhimPhanTrang?maNhom=GP01&soTrang=${page}&soPhanTuTrenTrang=${pageSize}`
+        `QuanLyPhim/LayDanhSachPhimPhanTrang?maNhom=GP03&soTrang=${page}&soPhanTuTrenTrang=${pageSize}`
       );
       return response.data.content;
     } catch (error) {
@@ -31,10 +32,35 @@ const movieApi = {
   },
   deleteMovie: async (movieId) => {
     try {
-      const response = await fetcher.delete(`QuanLyPhim/XP?MaPhim=${movieId}`);
+      const response = await fetcher.delete(
+        `QuanLyPhim/XoaPhim?MaPhim=${movieId}`,
+        movieId
+      );
       return response.data.content;
     } catch (error) {
-      throw error.response.data;
+      throw error;
+    }
+  },
+  addMovie: async (formData) => {
+    try {
+      const response = await fetcher.post(
+        "QuanLyPhim/ThemPhimUploadHinh",
+        formData
+      );
+      return response.data.content;
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateMovie: async (formData) => {
+    try {
+      const response = await fetcher.post(
+        "QuanLyPhim/CapNhatPhimUpload",
+        formData
+      );
+      return response.data.content;
+    } catch (error) {
+      throw error;
     }
   },
 };
