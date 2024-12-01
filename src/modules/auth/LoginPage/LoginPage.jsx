@@ -50,7 +50,6 @@ export default function LoginPage() {
   const { mutate: handleLogin, isPending } = useMutation({
     mutationFn: (formValues) => userApi.login(formValues),
     onSuccess: (data) => {
-      console.log("👉 ~ LoginPage ~ data:", data);
       const currentUser = data;
       toast.success("Đăng nhập thành công");
       dispatch(setCurrentUser(currentUser));

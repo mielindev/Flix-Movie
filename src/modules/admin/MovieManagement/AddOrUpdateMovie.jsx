@@ -114,7 +114,7 @@ export default function AddOrUpdateMovie({
                 return (
                   <DatePicker
                     label="Ngày khởi chiếu"
-                    format="dd/MM/yyyy"
+                    format="DD/MM/YYYY"
                     defaultValue={
                       dataEdit ? new Date(dataEdit.ngayKhoiChieu) : null
                     }

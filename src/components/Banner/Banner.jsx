@@ -9,7 +9,6 @@ export default function Banner() {
     queryKey: ["bannerList"],
     queryFn: () => movieApi.getBannerMovie(),
   });
-  console.log("👉 ~ Banner ~ data:", data);
 
   // useEffect(() => {
   //   const res = async () => {

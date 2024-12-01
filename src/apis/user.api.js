@@ -30,6 +30,19 @@ const userApi = {
       throw error;
     }
   },
+  addUser: async (payload) => {
+    try {
+      const response = await fetcher.post(
+        "QuanLyNguoiDung/ThemNguoiDung",
+        payload
+      );
+      console.log("👉 ~ addUser: ~ response:", response);
+      return response.data.content;
+    } catch (error) {
+      console.log("👉 ~ addUser: ~ error:", error);
+      throw error;
+    }
+  },
 };
 
 export default userApi;

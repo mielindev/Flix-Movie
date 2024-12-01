@@ -4,7 +4,6 @@ const movieApi = {
   getBannerMovie: async () => {
     try {
       const response = await fetcher.get("QuanLyPhim/LayDanhSachBanner");
-      console.log("👉 ~ getBannerMovie: ~ response:", response);
       return response.data.content;
     } catch (error) {
       throw error.response.data;
@@ -59,6 +58,34 @@ const movieApi = {
         formData
       );
       return response.data.content;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getMoviedDetails: async (movieId) => {
+    try {
+      const response = await fetcher.get(
+        `QuanLyPhim/LayThongTinPhim?MaPhim=${movieId}`
+      );
+      return response.data.content;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getMovieTheaterSystem: async () => {
+    try {
+      const response = await fetcher.get("QuanLyRap/LayThongTinHeThongRap");
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getMovieByName: async (theaterId) => {
+    try {
+      const respose = await fetcher.get(
+        `QuanLyRap/LayThongTinLichChieuHeThongRap?maHeThongRap=${theaterId}&maNhom=GP03`
+      );
+      return respose.data;
     } catch (error) {
       throw error;
     }

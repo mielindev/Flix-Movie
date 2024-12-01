@@ -9,6 +9,7 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  MenuItem,
   Pagination,
   PaginationItem,
   Skeleton,
@@ -20,6 +21,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -33,10 +35,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useForm } from "react-hook-form";
 import { LoadingButton } from "@mui/lab";
 import useOpenModal from "../../../hooks/useOpenModal";
 import toast from "react-hot-toast";
+import AddOrUpdateUser from "./AddOrUpdateUser";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -65,8 +67,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function UserManagement() {
   const [page, setPage] = useState(1);
   const [userTaiKhoan, setUserTaiKhoan] = useState(null);
-  console.log("👉 ~ UserManagement ~ userTaiKhoan:", userTaiKhoan);
   const { openModal, onCloseModal, handleClickOpen } = useOpenModal();
+  const [openAddOrEdit, setOpenAddOrEdit] = useState(false);
   const queryClient = useQueryClient();
 
   // Call api get user list
@@ -91,6 +93,19 @@ export default function UserManagement() {
     },
   });
 
+  // Call api add user
+  const { mutate: mutateHandleAddUser } = useMutation({
+    mutationFn: (formValues) =>
+      userApi.addUser("QuanLyNguoiDung/ThemNguoiDung", formValues),
+    onSuccess: (response) => {
+      toast.success("Thêm người dùng thành công!");
+    },
+    onError: (error) => {
+      console.log("👉 ~ UserManagement ~ error:", error);
+      toast.error("Thêm người dùng thất bại. Vui lòng thử lại!");
+    },
+  });
+
   const handleChangePage = (_e, value) => {
     setPage(value);
   };
@@ -102,6 +117,15 @@ export default function UserManagement() {
 
   const handelDeleteUser = () => {
     mutate(userTaiKhoan);
+  };
+
+  const handleOpenAddOrEdit = () => {
+    setOpenAddOrEdit(true);
+  };
+
+  const handleAddUser = (formValues) => {
+    console.log("👉 ~ handleAddUser ~ formValues:", formValues);
+    mutateHandleAddUser(formValues);
   };
 
   const userListPagination = data?.items || [];
@@ -121,6 +145,9 @@ export default function UserManagement() {
               User Management
             </Typography>
           </Breadcrumbs>
+          <Button variant="contained" onClick={handleOpenAddOrEdit}>
+            Thêm người dùng
+          </Button>
         </Stack>
         <TableContainer component={Paper}>
           <Table>
@@ -197,6 +224,7 @@ export default function UserManagement() {
           </Stack>
         </TableContainer>
       </Box>
+      {/* Modal delete user */}
       <Dialog
         open={openModal}
         onClose={handleClose}
@@ -230,6 +258,12 @@ export default function UserManagement() {
           </LoadingButton>
         </DialogActions>
       </Dialog>
+      {/* Modal add user */}
+      <AddOrUpdateUser
+        isOpen={openAddOrEdit}
+        onClose={() => setOpenAddOrEdit(false)}
+        onSubmit={handleAddUser}
+      />
     </Box>
   );
 }

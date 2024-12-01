@@ -12,13 +12,20 @@ import {
 } from "@mui/material";
 import ClosedCaptionIcon from "@mui/icons-material/ClosedCaption";
 import { useQuery } from "@tanstack/react-query";
-import movieApi from "../../apis/movie.api";
+import movieApi from "../../../apis/movie.api";
+import { useNavigate } from "react-router-dom";
+import PATH from "../../../routes/path";
 
 export default function MovieList() {
   const { data, isPending, isError } = useQuery({
     queryKey: ["movieList"],
     queryFn: () => movieApi.getMovieList(),
   });
+  const navigate = useNavigate();
+
+  const handleNavigateMovieDetails = (movieId) => {
+    navigate(PATH.MOVIE_DETAILS.replace(":movieId", movieId));
+  };
   const movieList = data ? data : [];
   return (
     <Box>
@@ -26,20 +33,23 @@ export default function MovieList() {
         container
         spacing={2}
         sx={{
-          width: "60%",
+          width: "80%",
           mx: "auto",
-          mt: 6,
-          p: 3,
+          my: 4,
         }}
       >
         {movieList.map((movie) => {
           return (
-            <Grid2 key={movie.maPhim} size={3}>
+            <Grid2 key={movie.maPhim} size={2}>
               <Card sx={{ borderRadius: "12px", overflow: "hidden" }}>
-                <CardActionArea>
+                <CardActionArea
+                  onClick={() => {
+                    handleNavigateMovieDetails(movie.maPhim);
+                  }}
+                >
                   <CardMedia
                     sx={{
-                      height: 300,
+                      height: 250,
                       objectFit: "fill",
                     }}
                     component="img"

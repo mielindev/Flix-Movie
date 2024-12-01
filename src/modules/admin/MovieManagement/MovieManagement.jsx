@@ -42,6 +42,7 @@ import { LoadingButton } from "@mui/lab";
 import { format } from "date-fns";
 import AddOrUpdateMovie from "./AddOrUpdateMovie";
 import useOpenModal from "../../../hooks/useOpenModal";
+import dayjs from "dayjs";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -142,10 +143,6 @@ export default function MovieManagement() {
   };
   const handleAddOrEditMovie = (formValues) => {
     if (dataEdit) {
-      console.log(
-        "👉 ~ handleAddOrEditMovie ~ dataEdit:",
-        format(new Date(dataEdit.ngayKhoiChieu), "dd/MM/yyyy")
-      );
       //Gọi Api
       let formData = new FormData();
       formData.append("maNhom", "GP03");
@@ -250,7 +247,7 @@ export default function MovieManagement() {
                     <img src={movie.hinhAnh} className="object-fill" alt="" />
                   </StyledTableCell>
                   <StyledTableCell>
-                    {format(new Date(movie.ngayKhoiChieu), "dd/MM/yyyy HH:mm")}
+                    {dayjs(movie.ngayKhoiChieu).format("DD/MM/YYYY")}
                   </StyledTableCell>
                   <StyledTableCell>
                     {movie.hot ? (
