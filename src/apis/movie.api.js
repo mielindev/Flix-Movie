@@ -90,6 +90,16 @@ const movieApi = {
       throw error;
     }
   },
+  getListPurchase: async (showId) => {
+    try {
+      const response = await fetcher.get(
+        `QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=${showId}`
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default movieApi;

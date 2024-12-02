@@ -7,6 +7,7 @@ const PATH = {
   LOGIN: "/auth/login",
   REGISTER: "/auth/register",
   MOVIE_DETAILS: "/movie-details/:movieId",
+  PURCHASE: "purchase/:showId",
 };
 
 export default PATH;

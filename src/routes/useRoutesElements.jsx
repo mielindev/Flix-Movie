@@ -11,6 +11,7 @@ import AdminPage from "../modules/admin/AdminPage/AdminPage";
 import AdminLayout from "../layouts/AdminLayout/AdminLayout";
 import UserManagement from "../modules/admin/UserManagement/UserManagement";
 import MovieManagement from "../modules/admin/MovieManagement/MovieManagement";
+import PurchasePage from "../modules/home/PurchasePage/PurchasePage";
 
 export default function useRoutesElements() {
   const elements = useRoutes([
@@ -25,6 +26,10 @@ export default function useRoutesElements() {
         {
           path: PATH.MOVIE_DETAILS,
           element: <MovieDetails />,
+        },
+        {
+          path: PATH.PURCHASE,
+          element: <PurchasePage />,
         },
       ],
     },

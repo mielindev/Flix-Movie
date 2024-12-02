@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import movieApi from "../../apis/movie.api";
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
+import PATH from "../../routes/path";
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -34,7 +36,7 @@ function a11yProps(index) {
 
 export default function TheaterByName({ maHeThongRap }) {
   const [value, setValue] = useState(0);
-
+  const navigate = useNavigate();
   const handleChange = (_event, newValue) => {
     setValue(newValue);
   };
@@ -43,6 +45,10 @@ export default function TheaterByName({ maHeThongRap }) {
     queryKey: ["theaterByName", maHeThongRap],
     queryFn: () => movieApi.getMovieByName(maHeThongRap),
   });
+
+  const handlePurchase = (showId) => {
+    navigate(PATH.PURCHASE.replace(":showId", showId));
+  };
   const listTheater = data?.content[0].lstCumRap || [];
   console.log("👉 ~ TheaterByName ~ data:", data);
   return (
@@ -133,7 +139,7 @@ export default function TheaterByName({ maHeThongRap }) {
                           size="medium"
                           color="error"
                           onClick={() => {
-                            console.log(item.maLichChieu);
+                            handlePurchase(item.maLichChieu);
                           }}
                         >
                           <Typography
