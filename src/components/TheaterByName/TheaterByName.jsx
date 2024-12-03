@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import PATH from "../../routes/path";
+import { useSelector } from "react-redux";
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -37,6 +38,7 @@ function a11yProps(index) {
 export default function TheaterByName({ maHeThongRap }) {
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
   const handleChange = (_event, newValue) => {
     setValue(newValue);
   };
@@ -47,10 +49,13 @@ export default function TheaterByName({ maHeThongRap }) {
   });
 
   const handlePurchase = (showId) => {
-    navigate(PATH.PURCHASE.replace(":showId", showId));
+    if (currentUser) {
+      navigate(PATH.PURCHASE.replace(":showId", showId));
+    } else {
+      navigate(PATH.LOGIN);
+    }
   };
   const listTheater = data?.content[0].lstCumRap || [];
-  console.log("👉 ~ TheaterByName ~ data:", data);
   return (
     <Box
       sx={{
@@ -110,10 +115,15 @@ export default function TheaterByName({ maHeThongRap }) {
 
       {listTheater.map((item, index) => {
         return (
-          <TabPanel className="w-[70%]" value={value} index={index}>
+          <TabPanel
+            key={item.maCumRap}
+            className="w-[70%]"
+            value={value}
+            index={index}
+          >
             {item.danhSachPhim.map((item) => {
               return (
-                <Grid2 container mb={2} spacing={2}>
+                <Grid2 key={item.maPhim} container mb={2} spacing={2}>
                   <Grid2 size={2}>
                     <img
                       width={150}
@@ -132,6 +142,7 @@ export default function TheaterByName({ maHeThongRap }) {
                     {item.lstLichChieuTheoPhim.map((item) => {
                       return (
                         <Button
+                          key={item.maLichChieu}
                           sx={{
                             m: 1,
                           }}

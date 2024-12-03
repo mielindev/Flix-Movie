@@ -101,7 +101,6 @@ export default function UserManagement() {
       toast.success("Thêm người dùng thành công!");
     },
     onError: (error) => {
-      console.log("👉 ~ UserManagement ~ error:", error);
       toast.error("Thêm người dùng thất bại. Vui lòng thử lại!");
     },
   });

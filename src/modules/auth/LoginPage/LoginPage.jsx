@@ -58,7 +58,6 @@ export default function LoginPage() {
         : navigate(PATH.ADMIN);
     },
     onError: (error) => {
-      console.log("👉 ~ LoginPage ~ error:", error);
       toast.error(error.content || "Đăng nhập thất bại. Vui lòng thử lại");
     },
   });

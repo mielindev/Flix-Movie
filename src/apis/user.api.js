@@ -13,7 +13,7 @@ const userApi = {
   getUserListPagination: async ({ page = 1, pageSize = 10 }) => {
     try {
       const response = await fetcher.get(
-        `QuanLyNguoiDung/LayDanhSachNguoiDungPhanTrang?MaNhom=GP03&soTrang=${page}&soPhanTuTrenTrang=${pageSize}`
+        `QuanLyNguoiDung/LayDanhSachNguoiDungPhanTrang?MaNhom=GP00&soTrang=${page}&soPhanTuTrenTrang=${pageSize}`
       );
       return response.data.content;
     } catch (error) {
@@ -36,10 +36,17 @@ const userApi = {
         "QuanLyNguoiDung/ThemNguoiDung",
         payload
       );
-      console.log("👉 ~ addUser: ~ response:", response);
-      return response.data.content;
+      return response.data;
     } catch (error) {
-      console.log("👉 ~ addUser: ~ error:", error);
+      throw error;
+    }
+  },
+  registerUser: async (formValues) => {
+    try {
+      const response = await fetcher.post("QuanLyNguoiDung/DangKy", formValues);
+      return response.data;
+    } catch (error) {
+      console.log("👉 ~ registerUser: ~ error:", error);
       throw error;
     }
   },
