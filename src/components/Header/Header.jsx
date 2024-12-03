@@ -12,10 +12,12 @@ import {
 } from "@mui/material";
 import TheatersIcon from "@mui/icons-material/Theaters";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../store/slice/user.slice";
+import { logout, setInfoUser } from "../../store/slice/user.slice";
 import { useNavigate } from "react-router-dom";
 import PATH from "../../routes/path";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import { useMutation } from "@tanstack/react-query";
+import userApi from "../../apis/user.api";
 
 const pages = ["Lịch Chiếu", "Cụm Rạp", "Tin Tức", "Ứng Dụng"];
 export default function Header() {
@@ -24,6 +26,15 @@ export default function Header() {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
 
+  const { mutate } = useMutation({
+    mutationFn: (index) => userApi.getAccountInfomation(index),
+    onError: (err) => {
+      console.log("👉 ~ ProfilePage ~ err:", err);
+    },
+    onSuccess: (res) => {
+      dispatch(setInfoUser(res));
+    },
+  });
   const handleLogin = () => {
     // Logic đăng nhập (thay thế khi cần)
     navigate(PATH.LOGIN);
@@ -38,6 +49,12 @@ export default function Header() {
     dispatch(logout());
     navigate(PATH.HOME);
     // handleCloseMenu();
+  };
+
+  const handleManageProfile = () => {
+    mutate(`Bearer ${currentUser.accessToken}`);
+    navigate(PATH.PROFILE);
+    handleCloseMenu();
   };
 
   const handleMenuOpen = (event) => {
@@ -84,7 +101,6 @@ export default function Header() {
             })}
           </Box>
         </Stack>
-
         <Box width="40%" display="flex" justifyContent="flex-end">
           {!currentUser ? (
             <Box>
@@ -124,6 +140,7 @@ export default function Header() {
                 open={Boolean(anchorEl)}
                 onClose={handleCloseMenu}
               >
+                <MenuItem onClick={handleManageProfile}>Tài khoản</MenuItem>
                 <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
               </Menu>
             </Box>

@@ -12,6 +12,7 @@ import AdminLayout from "../layouts/AdminLayout/AdminLayout";
 import UserManagement from "../modules/admin/UserManagement/UserManagement";
 import MovieManagement from "../modules/admin/MovieManagement/MovieManagement";
 import PurchasePage from "../modules/home/PurchasePage/PurchasePage";
+import ProfilePage from "../modules/home/ProfilePage/ProfilePage";
 
 export default function useRoutesElements() {
   const elements = useRoutes([
@@ -30,6 +31,10 @@ export default function useRoutesElements() {
         {
           path: PATH.PURCHASE,
           element: <PurchasePage />,
+        },
+        {
+          path: PATH.PROFILE,
+          element: <ProfilePage />,
         },
       ],
     },

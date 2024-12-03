@@ -100,6 +100,14 @@ const movieApi = {
       throw error;
     }
   },
+  bookingMoive: async (formValues) => {
+    try {
+      const response = await fetcher.post("QuanLyDatVe/DatVe", formValues);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default movieApi;

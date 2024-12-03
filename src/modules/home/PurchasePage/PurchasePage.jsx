@@ -5,8 +5,6 @@ import movieApi from "../../../apis/movie.api";
 import { Box, Button, Grid2, Stack, Toolbar, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCard } from "../../../store/slice/card.slice";
-let total = 0;
-let listItemSelected = [];
 export default function PurchasePage() {
   const { showId } = useParams();
   const { data } = useQuery({
@@ -15,11 +13,10 @@ export default function PurchasePage() {
   });
   const dispatch = useDispatch();
   const { currentCard } = useSelector((state) => state.card);
+  let total = 0;
+
   currentCard.map((item) => {
     total += item.giaVe;
-  });
-  currentCard.map((item) => {
-    listItemSelected.push(`Ghế: ${item.tenGhe}`);
   });
 
   const purchaseInfomation = data?.content || [];
@@ -180,7 +177,9 @@ export default function PurchasePage() {
                 Chọn:
               </Typography>
               <Typography sx={{ color: "#108f3e", fontSize: 18 }}>
-                {listItemSelected.join(", ")}
+                {currentCard.map((item) => {
+                  return `Ghế ${item.tenGhe}, `;
+                })}
               </Typography>
             </Stack>
             <Button sx={{ p: 2 }} variant="contained" color="error">

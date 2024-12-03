@@ -46,7 +46,28 @@ const userApi = {
       const response = await fetcher.post("QuanLyNguoiDung/DangKy", formValues);
       return response.data;
     } catch (error) {
-      console.log("👉 ~ registerUser: ~ error:", error);
+      throw error;
+    }
+  },
+  getAccountInfomation: async (token) => {
+    try {
+      const response = await fetcher.post(
+        "QuanLyNguoiDung/ThongTinTaiKhoan",
+        token
+      );
+      return response.data.content;
+    } catch (error) {
+      throw error;
+    }
+  },
+  editAccountInfor: async (formValues) => {
+    try {
+      const response = await fetcher.put(
+        "QuanLyNguoiDung/CapNhatThongTinNguoiDung",
+        formValues
+      );
+      return response.data;
+    } catch (error) {
       throw error;
     }
   },
