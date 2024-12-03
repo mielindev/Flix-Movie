@@ -102,7 +102,10 @@ const movieApi = {
   },
   bookingMoive: async (formValues) => {
     try {
-      const response = await fetcher.post("QuanLyDatVe/DatVe", formValues);
+      const response = await fetcher.post(
+        "QuanLyDatVe/DatVe",
+        JSON.stringify(formValues)
+      );
       return response.data;
     } catch (error) {
       throw error;

@@ -1,10 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import movieApi from "../../../apis/movie.api";
 import { Box, Button, Grid2, Stack, Toolbar, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCard } from "../../../store/slice/card.slice";
+import toast from "react-hot-toast";
 export default function PurchasePage() {
   const { showId } = useParams();
   const { data } = useQuery({
@@ -18,6 +19,25 @@ export default function PurchasePage() {
   currentCard.map((item) => {
     total += item.giaVe;
   });
+
+  const { mutate: handleBookingMovie } = useMutation({
+    mutationFn: (formValues) => movieApi.bookingMoive(formValues),
+    onSuccess: (response) => {
+      console.log("👉 ~ PurchasePage ~ response:", response);
+      toast.success("Đặt vé thành công!");
+    },
+    onError: (error) => {
+      console.log("👉 ~ PurchasePage ~ error:", error);
+      toast.error("Đặt vé thất bại. Vui lòng thử lại!");
+    },
+  });
+
+  const onSubmit = () => {
+    // handleBookingMovie({
+    //   maLichChieu: showId,
+    //   danhSachVe: currentCard,
+    // });
+  };
 
   const purchaseInfomation = data?.content || [];
   const thongTinPhim = purchaseInfomation?.thongTinPhim || [];
@@ -55,7 +75,9 @@ export default function PurchasePage() {
                       },
                     }}
                     onClick={() => {
-                      dispatch(addToCard(seat));
+                      dispatch(
+                        addToCard({ maGhe: seat.tenGhe, giaVe: seat.giaVe })
+                      );
                     }}
                   >
                     <Typography sx={{ color: "black", fontWeight: 550 }}>
@@ -178,11 +200,16 @@ export default function PurchasePage() {
               </Typography>
               <Typography sx={{ color: "#108f3e", fontSize: 18 }}>
                 {currentCard.map((item) => {
-                  return `Ghế ${item.tenGhe}, `;
+                  return `Ghế ${item.maGhe}, `;
                 })}
               </Typography>
             </Stack>
-            <Button sx={{ p: 2 }} variant="contained" color="error">
+            <Button
+              onClick={onSubmit}
+              sx={{ p: 2 }}
+              variant="contained"
+              color="error"
+            >
               Đặt vé
             </Button>
           </Stack>
