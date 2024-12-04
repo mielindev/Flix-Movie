@@ -44,7 +44,7 @@ const userApi = {
   registerUser: async (formValues) => {
     try {
       const response = await fetcher.post("QuanLyNguoiDung/DangKy", formValues);
-      return response.data;
+      return response.data.content;
     } catch (error) {
       throw error;
     }
@@ -66,7 +66,7 @@ const userApi = {
         "QuanLyNguoiDung/CapNhatThongTinNguoiDung",
         formValues
       );
-      return response.data;
+      return response.data.content;
     } catch (error) {
       throw error;
     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -36,6 +36,7 @@ import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Loading from "../../../components/Loading/Loading";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -58,6 +59,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
+
 const schema = yup.object().shape({
   taiKhoan: yup
     .string()
@@ -126,9 +128,11 @@ function a11yProps(index) {
 export default function ProfilePage() {
   const [value, setValue] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
-  const { infomationUser } = useSelector((state) => state.user);
-  const historyList = infomationUser.thongTinDatVe;
-  const { mutate, isPending } = useMutation({
+  const response = useSelector((state) => state.user);
+  const data = response?.infomationUser || [];
+
+  const historyList = data ? data.thongTinDatVe : [];
+  const { mutate } = useMutation({
     mutationFn: (formValues) => userApi.editAccountInfor(formValues),
     onSuccess: (response) => {
       console.log("👉 ~ ProfilePage ~ response:", response);
@@ -145,13 +149,13 @@ export default function ProfilePage() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      taiKhoan: infomationUser.taiKhoan,
-      matKhau: infomationUser.matKhau,
-      email: infomationUser.email,
-      soDT: infomationUser.soDt,
-      maNhom: infomationUser.maNhom,
-      maLoaiNguoiDung: infomationUser.maLoaiNguoiDung,
-      hoTen: infomationUser.hoTen,
+      taiKhoan: data.taiKhoan,
+      matKhau: data.matKhau,
+      email: data.email,
+      soDT: data.soDt,
+      maNhom: data.maNhom,
+      maLoaiNguoiDung: data.maLoaiNguoiDung,
+      hoTen: data.hoTen,
     },
     resolver: yupResolver(schema),
   });
@@ -196,7 +200,7 @@ export default function ProfilePage() {
               <TextField
                 label="Họ và tên "
                 fullWidth
-                defaultValue={infomationUser.hoTen}
+                defaultValue={data.hoTen}
                 {...register("hoTen")}
                 error={!!errors.hoTen}
                 helperText={errors.hoTen?.message}
@@ -205,7 +209,7 @@ export default function ProfilePage() {
                 sx={{ my: 3 }}
                 label="Email "
                 fullWidth
-                defaultValue={infomationUser.email}
+                defaultValue={data.email}
                 {...register("email")}
                 error={!!errors.email}
                 helperText={errors.email?.message}
@@ -213,7 +217,7 @@ export default function ProfilePage() {
               <TextField
                 label="Số điện thoại "
                 fullWidth
-                defaultValue={infomationUser.soDT}
+                defaultValue={data.soDT}
                 {...register("soDT")}
                 error={!!errors.soDT}
                 helperText={errors.soDT?.message}
@@ -223,7 +227,7 @@ export default function ProfilePage() {
               <TextField
                 label="Tài khoản"
                 {...register("taiKhoan")}
-                defaultValue={infomationUser.taiKhoan}
+                defaultValue={data.taiKhoan}
                 fullWidth
                 error={!!errors.taiKhoan}
                 helperText={errors.taiKhoan?.message}
@@ -235,7 +239,7 @@ export default function ProfilePage() {
                 <OutlinedInput
                   {...register("matKhau")}
                   name="matKhau"
-                  defaultValue={infomationUser.matKhau}
+                  defaultValue={data.matKhau}
                   id="outlined-adornment-password"
                   type={showPassword ? "text" : "password"}
                   error={!!errors.matKhau}

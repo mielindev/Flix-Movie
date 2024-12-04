@@ -5,37 +5,29 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
-  Divider,
   Grid2,
   Stack,
+  Toolbar,
   Typography,
 } from "@mui/material";
 import ClosedCaptionIcon from "@mui/icons-material/ClosedCaption";
-import { useQuery } from "@tanstack/react-query";
-import movieApi from "../../../apis/movie.api";
 import { useNavigate } from "react-router-dom";
 import PATH from "../../../routes/path";
 
-export default function MovieList() {
-  const { data, isPending, isError } = useQuery({
-    queryKey: ["movieList"],
-    queryFn: () => movieApi.getMovieList(),
-  });
+export default function MovieList({ movieList }) {
   const navigate = useNavigate();
-
   const handleNavigateMovieDetails = (movieId) => {
     navigate(PATH.MOVIE_DETAILS.replace(":movieId", movieId));
   };
-  const movieList = data ? data : [];
   return (
     <Box>
+      <Toolbar />
       <Grid2
         container
         spacing={2}
         sx={{
           width: "80%",
           mx: "auto",
-          my: 4,
         }}
       >
         {movieList.map((movie) => {

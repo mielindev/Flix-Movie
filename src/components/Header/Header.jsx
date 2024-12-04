@@ -27,7 +27,7 @@ export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
 
   const { mutate } = useMutation({
-    mutationFn: (index) => userApi.getAccountInfomation(index),
+    mutationFn: (token) => userApi.getAccountInfomation(token),
     onError: (err) => {
       console.log("👉 ~ ProfilePage ~ err:", err);
     },

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs, Toolbar } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import movieApi from "../../../apis/movie.api";
 import PropTypes from "prop-types";
@@ -52,6 +52,7 @@ export default function Schedule() {
         bgcolor: "background.paper",
         display: "flex",
         // height: 224,
+        mt: 6,
       }}
     >
       <Tabs
